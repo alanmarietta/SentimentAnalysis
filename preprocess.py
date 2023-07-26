@@ -1,6 +1,7 @@
 # Importing necessary libraries
 import pandas as pd
 import nltk
+import tensorflow_datasets as tfds  # <-- Added this
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import string
@@ -8,11 +9,23 @@ import string
 # Download NLTK resources
 nltk.download('stopwords')
 nltk.download('wordnet')
+# Load the IMDb dataset from TensorFlow Datasets
+(train_data, test_data), info = tfds.load(
+    'imdb_reviews',
+    split=(tfds.Split.TRAIN, tfds.Split.TEST),
+    as_supervised=True,
+    with_info=True
+)
 
-# Load the IMDb dataset
-# Note: You need to have the dataset in CSV format. Modify the path below accordingly.
-data_path = "data/imdb_reviews.csv"
-data = pd.read_csv(data_path)
+# Convert TensorFlow dataset to lists
+train_texts, train_labels = zip(*[(x.numpy().decode('utf-8'), y.numpy()) for x, y in train_data])
+test_texts, test_labels = zip(*[(x.numpy().decode('utf-8'), y.numpy()) for x, y in test_data])
+
+# Convert lists to pandas DataFrame
+data = pd.DataFrame({
+    'review': train_texts + test_texts,
+    'sentiment': train_labels + test_labels
+})
 
 # Check the first few rows of the dataset to understand its structure
 print(data.head())

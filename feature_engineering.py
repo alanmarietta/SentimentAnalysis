@@ -18,7 +18,7 @@ def tfidf_features(texts, max_features=1000):
     feature_matrix = vectorizer.fit_transform(texts)
     return feature_matrix.toarray()
 
-def word2vec_features(texts, embedding_size=100):
+def word2vec_features(texts, embedding_size=100, pretrained_model=None):
     """
     Transform a list of texts into a matrix of word2vec embeddings.
     Each text is represented as the average of its word embeddings.
@@ -33,13 +33,16 @@ def word2vec_features(texts, embedding_size=100):
     # Tokenize texts
     tokenized_texts = [word_tokenize(text) for text in texts]
     
-    # Train a Word2Vec model
-    model = Word2Vec(sentences=tokenized_texts, vector_size=embedding_size, window=5, min_count=1, workers=4)
-    model.train(tokenized_texts, total_examples=len(tokenized_texts), epochs=10)
+    if pretrained_model is None:
+        # Train a Word2Vec model if none is provided
+        model = Word2Vec(sentences=tokenized_texts, vector_size=embedding_size, window=5, min_count=1, workers=4)
+        model.train(tokenized_texts, total_examples=len(tokenized_texts), epochs=10)
+    else:
+        model = pretrained_model
     
-    # Convert texts to averaged word embeddings
     embeddings = []
     for tokens in tokenized_texts:
         avg_embedding = np.mean([model.wv[token] for token in tokens if token in model.wv.index_to_key], axis=0)
         embeddings.append(avg_embedding)
+
     return np.array(embeddings)
