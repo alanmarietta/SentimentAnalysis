@@ -6,30 +6,6 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import string
 
-# Download NLTK resources
-nltk.download('stopwords')
-nltk.download('wordnet')
-# Load the IMDb dataset from TensorFlow Datasets
-(train_data, test_data), info = tfds.load(
-    'imdb_reviews',
-    split=(tfds.Split.TRAIN, tfds.Split.TEST),
-    as_supervised=True,
-    with_info=True
-)
-
-# Convert TensorFlow dataset to lists
-train_texts, train_labels = zip(*[(x.numpy().decode('utf-8'), y.numpy()) for x, y in train_data])
-test_texts, test_labels = zip(*[(x.numpy().decode('utf-8'), y.numpy()) for x, y in test_data])
-
-# Convert lists to pandas DataFrame
-data = pd.DataFrame({
-    'review': train_texts + test_texts,
-    'sentiment': train_labels + test_labels
-})
-
-# Check the first few rows of the dataset to understand its structure
-print(data.head())
-
 # Initialize the stopwords and the WordNet lemmatizer
 stop_words = set(stopwords.words('english'))
 lemmatizer = WordNetLemmatizer()
@@ -57,10 +33,35 @@ def preprocess_text(text):
     
     return ' '.join(tokens)
 
-# Apply preprocessing to the review column of the dataset
-data['review'] = data['review'].apply(preprocess_text)
+if __name__ == "__main__":
+    # Download NLTK resources
+    nltk.download('stopwords')
+    nltk.download('wordnet')
+    # Load the IMDb dataset from TensorFlow Datasets
+    (train_data, test_data), info = tfds.load(
+        'imdb_reviews',
+        split=(tfds.Split.TRAIN, tfds.Split.TEST),
+        as_supervised=True,
+        with_info=True
+    )
 
-# Save the preprocessed data for further use
-data.to_csv("data/preprocessed_reviews.csv", index=False)
+    # Convert TensorFlow dataset to lists
+    train_texts, train_labels = zip(*[(x.numpy().decode('utf-8'), y.numpy()) for x, y in train_data])
+    test_texts, test_labels = zip(*[(x.numpy().decode('utf-8'), y.numpy()) for x, y in test_data])
 
-print("Data preprocessing completed!")
+    # Convert lists to pandas DataFrame
+    data = pd.DataFrame({
+        'review': train_texts + test_texts,
+        'sentiment': train_labels + test_labels
+    })
+
+    # Check the first few rows of the dataset to understand its structure
+    print(data.head())
+
+    # Apply preprocessing to the review column of the dataset
+    data['review'] = data['review'].apply(preprocess_text)
+
+    # Save the preprocessed data for further use
+    data.to_csv("data/preprocessed_reviews.csv", index=False)
+
+    print("Data preprocessing completed!")

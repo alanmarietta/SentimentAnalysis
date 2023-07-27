@@ -1,0 +1,7 @@
+.github-link {
+    display: block;
+    font-size: 1.5em; /* Makes the text 1.5 times larger */
+    font-weight: bold; /* Makes the text bold */
+    margin-top: 10px; /* Adds space between the paragraph and the link */
+    text-align: center; /* Centers the text */
+}

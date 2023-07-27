@@ -26,6 +26,7 @@ def word2vec_features(texts, embedding_size=100, pretrained_model=None):
     Args:
     - texts (list of str): The input texts.
     - embedding_size (int): Size of the word embeddings.
+    - pretrained_model (gensim.models.Word2Vec): Pre-trained Word2Vec model.
 
     Returns:
     - numpy.ndarray: The matrix of averaged word embeddings.
@@ -42,7 +43,16 @@ def word2vec_features(texts, embedding_size=100, pretrained_model=None):
     
     embeddings = []
     for tokens in tokenized_texts:
-        avg_embedding = np.mean([model.wv[token] for token in tokens if token in model.wv.index_to_key], axis=0)
+        # Filtering out tokens not in the model vocabulary
+        valid_tokens = [token for token in tokens if token in model.wv.index_to_key]
+        
+        # If no valid tokens, use a zero vector, else average the embeddings
+        if not valid_tokens:
+            avg_embedding = np.zeros(embedding_size)
+        else:
+            avg_embedding = np.mean([model.wv[token] for token in valid_tokens], axis=0)
+        
         embeddings.append(avg_embedding)
 
     return np.array(embeddings)
+

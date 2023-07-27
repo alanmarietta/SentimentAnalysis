@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Sentiment Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h2>Movie Review Sentiment Analysis</h2>
+    <form action="/" method="post">
+        <textarea name="review_text" rows="4" cols="50" placeholder="Enter your review..."></textarea><br><br>
+        <input type="submit" value="Analyze">
+    </form>
+    {% if prediction %}
+    <h3>Prediction: {{ prediction }}</h3>
+    {% endif %}
+
+    <footer>
+        <p>
+            Enjoy using this tool! Paste in any movie review and see if my ML model can guess whether it is positive or negative.
+        </p>
+        <a href="https://github.com/alanmarietta" target="_blank" rel="noopener noreferrer" class="github-link">github.com/alanmarietta</a>
+    </footer>
+</body>
+</html>
