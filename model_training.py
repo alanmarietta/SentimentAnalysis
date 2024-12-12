@@ -27,7 +27,7 @@ texts_train_tokenized = [word_tokenize(text) for text in texts_train]
 # This part creates the Word2Vec model instance without immediately training it
 w2v_model = Word2Vec(sentences=None, vector_size=100, window=5, min_count=1, workers=4)
 
-# Build the vocabulary from your training data
+# Build the vocabulary from training data
 w2v_model.build_vocab(texts_train_tokenized)
 
 # Now you can train the model
